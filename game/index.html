@@ -841,7 +841,18 @@ function resizeCanvas() {
 // Call resizeCanvas initially to set the initial dimensions
 resizeCanvas();
     //==========================================================================
-    // Define your key handling logic as before
+// Define your key handling logic as before
+
+      keys: [
+        { keys: [KEY.LEFT,  KEY.A], mode: 'down', action: function() { keyLeft   = true;  } },
+        { keys: [KEY.RIGHT, KEY.D], mode: 'down', action: function() { keyRight  = true;  } },
+        { keys: [KEY.UP,    KEY.W], mode: 'down', action: function() { keyFaster = true;  } },
+        { keys: [KEY.DOWN,  KEY.S], mode: 'down', action: function() { keySlower = true;  } },
+        { keys: [KEY.LEFT,  KEY.A], mode: 'up',   action: function() { keyLeft   = false; } },
+        { keys: [KEY.RIGHT, KEY.D], mode: 'up',   action: function() { keyRight  = false; } },
+        { keys: [KEY.UP,    KEY.W], mode: 'up',   action: function() { keyFaster = false; } },
+        { keys: [KEY.DOWN,  KEY.S], mode: 'up',   action: function() { keySlower = false; } }
+      ],
 var keyLeft = false;
 var keyRight = false;
 var keyFaster = false;
@@ -862,25 +873,36 @@ document.addEventListener('keyup', function (event) {
 });
 
 // Add event listener for device motion
-window.addEventListener('devicemotion', function (event) {
-  // Adjust the threshold based on your game's sensitivity
-  var shakeThreshold = 15;
+if (window.DeviceMotionEvent) {
+  // Adjust the sensitivity based on your game's requirements
+  var shakeSensitivity = 15;
 
-  // Check for significant changes in acceleration
-  if (Math.abs(event.acceleration.x) > shakeThreshold ||
-      Math.abs(event.acceleration.y) > shakeThreshold ||
-      Math.abs(event.acceleration.z) > shakeThreshold) {
-    // Perform shaking actions here
-    // For example, you can trigger the left or right movement when the device is shaken
-    // Replace this with your actual shaking logic
-    keyLeft = true;
-    
-    // Add a delay or cooldown if needed to prevent rapid shaking triggering
-    setTimeout(function () {
-      keyLeft = false;
-    }, 500);
-  }
-});
+  // Variables to track the previous acceleration values
+  var lastAccelerationX = 0;
+  var lastAccelerationY = 0;
+  var lastAccelerationZ = 0;
+
+  window.addEventListener('devicemotion', function (event) {
+    // Calculate the change in acceleration
+    var deltaX = Math.abs(event.acceleration.x - lastAccelerationX);
+    var deltaY = Math.abs(event.acceleration.y - lastAccelerationY);
+    var deltaZ = Math.abs(event.acceleration.z - lastAccelerationZ);
+
+    // Check if the change is above the sensitivity threshold
+    if (deltaX > shakeSensitivity || deltaY > shakeSensitivity || deltaZ > shakeSensitivity) {
+      // Perform shaking actions here
+      // For example, you can trigger the left or right movement when the device is shaken
+      // Replace this with your actual shaking logic
+      keyLeft = !keyLeft;
+
+      // Update the last acceleration values
+      lastAccelerationX = event.acceleration.x;
+      lastAccelerationY = event.acceleration.y;
+      lastAccelerationZ = event.acceleration.z;
+    }
+  });
+}
+
   </script>
 <div id="advrtz-container">
   <!-- Your ad content goes here -->
