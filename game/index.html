@@ -841,6 +841,46 @@ function resizeCanvas() {
 // Call resizeCanvas initially to set the initial dimensions
 resizeCanvas();
     //==========================================================================
+    // Define your key handling logic as before
+var keyLeft = false;
+var keyRight = false;
+var keyFaster = false;
+var keySlower = false;
+
+var handleKeys = function () {
+  // Your existing key handling logic here
+  // ...
+};
+
+// Add event listeners for key handling
+document.addEventListener('keydown', function (event) {
+  handleKeys(event, 'down');
+});
+
+document.addEventListener('keyup', function (event) {
+  handleKeys(event, 'up');
+});
+
+// Add event listener for device motion
+window.addEventListener('devicemotion', function (event) {
+  // Adjust the threshold based on your game's sensitivity
+  var shakeThreshold = 15;
+
+  // Check for significant changes in acceleration
+  if (Math.abs(event.acceleration.x) > shakeThreshold ||
+      Math.abs(event.acceleration.y) > shakeThreshold ||
+      Math.abs(event.acceleration.z) > shakeThreshold) {
+    // Perform shaking actions here
+    // For example, you can trigger the left or right movement when the device is shaken
+    // Replace this with your actual shaking logic
+    keyLeft = true;
+    
+    // Add a delay or cooldown if needed to prevent rapid shaking triggering
+    setTimeout(function () {
+      keyLeft = false;
+    }, 500);
+  }
+});
   </script>
 <div id="advrtz-container">
   <!-- Your ad content goes here -->
