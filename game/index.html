@@ -908,7 +908,26 @@ resizeCanvas();
 }
 </style>
 
+  <script>
+    function handleOrientationChange() {
+      if (window.innerWidth > window.innerHeight) {
+        // Landscape mode
+        document.body.style.transform = 'rotate(0deg)';
+      } else {
+        // Portrait mode
+        document.body.style.transform = 'rotate(90deg)';
+      }
+    }
 
+    // Initial orientation check
+    handleOrientationChange();
+
+    // Listen for orientation change
+    window.addEventListener('orientationchange', handleOrientationChange);
+
+    // Listen for resize events to handle changes on devices without orientation change events
+    window.addEventListener('resize', handleOrientationChange);
+  </script>
 
 </body> 
 </html>
