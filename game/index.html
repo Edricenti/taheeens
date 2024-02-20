@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/3926bf6b30.js" crossorigin="anonymous"></script>
+    <title>User Information</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #212121;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #aaa;
+        }
+
+        .searchBox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .searchInput {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #444;
+            color: #fff;
+            transition: border-color 0.3s;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .searchInput:focus {
+            border-color: #007bff;
+        }
+
+        .searchButton {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            outline: none;
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .searchButton:hover {
+            background-color: #0056b3;
+        }
+
+        .taskLink {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .taskLink:hover {
+            background-color: #0056b3;
+        }
+
+        .completed {
+            color: #28a745 !important;
+            pointer-events: none;
+        }
+
+        .notCompleted {
+            color: #dc3545 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>User Information</h1>
+    <a href="users/register.html">Register Now!</a>
+    <div class="searchBox">
+        <label for="username">Enter your username:</label>
+        <input class="searchInput" type="text" name="" placeholder="USERNAME" id="username">
+        <button class="searchButton" onclick="getUserInfo()">Search</button>
+    </div>
+
+    <div id="spinner" style="display: none;">Loading...</div>
+    <div id="result"></div>
+    <div id="error" style="color: #dc3545;"></div>
+
+    <!-- Task fields (initially hidden) -->
+    <div id="taskFields" style="display: none;">
+        <a id="task1Link" class="taskLink" href="#" target="_blank">Task 1</a>
+        <a id="task2Link" class="taskLink" href="#" target="_blank">Task 2</a>
+        <a id="task3Link" class="taskLink" href="#" target="_blank">Task 3</a>
+        <a id="task4Link" class="taskLink" href="#" target="_blank">Task 4</a>
+        <a id="task5Link" class="taskLink" href="#" target="_blank">Task 5</a>
+        <a id="task6Link" class="taskLink" href="#" target="_blank">Task 6</a>
+    </div>
+</div>
+
+<script>
+    function getUserInfo() {
+        var getUsername = document.getElementById('username').value;
+        var spinner = document.getElementById('spinner');
+        var taskFields = document.getElementById('taskFields');
+
+        spinner.style.display = 'block';
+
+        var url = 'https://script.google.com/macros/s/AKfycbx7CdLKm11nCfpy4C-EyU32PB0Mum12qqMuofrzPGqE_dODfOS2-Da8VMIW5hja1ivf/exec?username=' + encodeURIComponent(getUsername);
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                spinner.style.display = 'none';
+                if (xhr.status === 200) {
+                    var result = JSON.parse(xhr.responseText);
+                    displayResult(result);
+                    if (result.userInfo) {
+                        displayTaskFields(result.userInfo);
+                    }
+                } else {
+                    displayError('Error: Unable to fetch data.');
+                }
+            }
+        };
+
+        xhr.open('GET', url, true);
+        xhr.send();
+    }
+
+    function displayTaskFields(userInfo) {
+        var taskFields = document.getElementById('taskFields');
+        taskFields.style.display = 'block';
+
+        document.getElementById('task1Link').innerText = userInfo.task1 ? 'Task 1 (Completed)' : 'Task 1 (Not Completed)';
+        document.getElementById('task2Link').innerText = userInfo.task2 ? 'Task 2 (Completed)' : 'Task 2 (Not Completed)';
+        document.getElementById('task3Link').innerText = userInfo.task3 ? 'Task 3 (Completed)' : 'Task 3 (Not Completed)';
+        document.getElementById('task4Link').innerText = userInfo.task4 ? 'Task 4 (Completed)' : 'Task 4 (Not Completed)';
+        document.getElementById('task5Link').innerText = userInfo.task5 ? 'Task 5 (Completed)' : 'Task 5 (Not Completed)';
+        document.getElementById('task6Link').innerText = userInfo.task6 ? 'Task 6 (Completed)' : 'Task 6 (Not Completed)';
+
+        // Enable or disable task links based on completion status
+        document.getElementById('task1Link').href = userInfo.task1 ? 'level-l1.html' : '#';
+        document.getElementById('task2Link').href = userInfo.task2 ? 'level-l2.html' : '#';
+        document.getElementById('task3Link').href = userInfo.task3 ? 'level-l3.html' : '#';
+        document.getElementById('task4Link').href = userInfo.task4 ? 'level-l4.html' : '#';
+        document.getElementById('task5Link').href = userInfo.task5 ? 'level-l5.html' : '#';
+        document.getElementById('task6Link').href = userInfo.task6 ? 'level-l6.html' : '#';
+
+        // Add appropriate class for styling
+        document.getElementById('task1Link').classList.add(userInfo.task1 ? 'completed' : 'notCompleted');
+        document.getElementById('task2Link').classList.add(userInfo.task2 ? 'completed' : 'notCompleted');
+        document.getElementById('task3Link').classList.add(userInfo.task3 ? 'completed' : 'notCompleted');
+        document.getElementById('task4Link').classList.add(userInfo.task4 ? 'completed' : 'notCompleted');
+        document.getElementById('task5Link').classList.add(userInfo.task5 ? 'completed' : 'notCompleted');
+        document.getElementById('task6Link').classList.add(userInfo.task6 ? 'completed' : 'notCompleted');
+    }
+
+    function displayResult(result) {
+        var resultDisplay = document.getElementById('result');
+        resultDisplay.innerHTML = '';
+
+        if (result.result === 'success') {
+            if (result.row) {
+                resultDisplay.innerHTML += '<p>New Row: ' + result.row + '</p>';
+            }
+        } else if (result.result === 'error') {
+            displayError('Error: ' + result.error);
+        }
+    }
+
+    function displayError(message) {
+        var errorDisplay = document.getElementById('error');
+        errorDisplay.innerHTML = '<p>' + message + '</p>';
+    }
+</script>
+
+</body>
+</html>
